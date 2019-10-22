@@ -1,17 +1,21 @@
 # star_line_bot_admin
 
-## Init
+[Demo](https://superj80820.github.io/projects/star_line_bot_admin)
+
+<img src="https://imgur.com/fb25FIT.jpg" width="800">
+
+## 初始化專案
 
 ```
 docker-compose run web npm install
 ```
 
-## Dev
+## 開發
 
 ```
 docker-compose up
 ```
 
-## Ref
+## 參考
 
-This reposteri is based on [vue-admin-template](https://github.com/PanJiaChen/vue-admin-template)
+[vue-admin-template](https://github.com/PanJiaChen/vue-admin-template)
