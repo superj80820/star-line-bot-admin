@@ -23,9 +23,7 @@ import { mock } from './utils/mock'
 Vue.use(VueLazyload)
 Vue.use(VueLive2d)
 
-// import { mockXHR } from '../mock'
 if (process.env.NODE_ENV === 'production') {
-  // mockXHR() //default use, but I am refactor
   mock()
 }
 

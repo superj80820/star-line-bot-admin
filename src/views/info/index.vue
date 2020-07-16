@@ -12,7 +12,7 @@
         <div class="img-cropper">
           <vue-cropper
             ref="cropper"
-            :autoCropArea="1"
+            :auto-crop-area="1"
             :src="imgSrc"
           />
         </div>
@@ -31,6 +31,7 @@
           <el-input v-model="form.detail" type="textarea" />
         </el-form-item>
         <el-form-item>
+          <el-checkbox v-model="syncFaceToken">同時上傳至辨識圖庫</el-checkbox>
           <el-button type="primary" @click="showFileChooser">選圖</el-button>
           <el-button type="success" @click="onCreate">創建</el-button>
           <el-button type="warning" @click="onUpload">更新</el-button>
@@ -53,6 +54,8 @@ export default {
   data() {
     return {
       imgSrc: `${process.env.BASE_URL}selectImageInfo.png`,
+      syncFaceToken: true,
+      full: true,
       id: '',
       form: {
         name: '',
@@ -118,9 +121,9 @@ export default {
         formData.append('detail', this.form.detail)
         axios({
           method: 'put',
-          url: `${process.env.VUE_APP_BASE_API}/api/faceService/info/${this.id}`,
+          url: `${process.env.VUE_APP_BASE_API}/face-service/faces/info/${this.id}`,
           headers: {
-            'Authorization': `Bearer ${this.token}`
+            'Authorization': this.token
           },
           data: formData
         })
@@ -134,7 +137,36 @@ export default {
             loading.close()
             this.$message('失敗')
           })
+      }, 'image/jpeg')
+    },
+    uploadFaceToken() {
+      const loading = this.$loading({
+        lock: true,
+        text: '上傳中'
       })
+      this.$refs.cropper.getCroppedCanvas().toBlob((blob) => {
+        const formData = new FormData()
+        formData.append('image', blob, 'filename.png')
+        formData.append('infoId', this.id)
+        axios({
+          method: 'post',
+          url: `${process.env.VUE_APP_BASE_API}/face-service/faces/face`,
+          headers: {
+            'Authorization': this.token
+          },
+          data: formData
+        })
+          .then((res) => {
+            console.log(res)
+            loading.close()
+            this.$message('成功')
+          })
+          .catch((err) => {
+            console.log(err)
+            loading.close()
+            this.$message('失敗')
+          })
+      }, 'image/jpeg')
     },
     onCreate() {
       const loading = this.$loading({
@@ -149,14 +181,16 @@ export default {
         formData.append('detail', this.form.detail)
         axios({
           method: 'post',
-          url: `${process.env.VUE_APP_BASE_API}/api/faceService/info`,
+          url: `${process.env.VUE_APP_BASE_API}/face-service/faces/info`,
           headers: {
-            'Authorization': `Bearer ${this.token}`
+            'Authorization': this.token
           },
           data: formData
         })
           .then((res) => {
             console.log(res)
+            this.id = res.data.id
+            if (this.syncFaceToken) this.uploadFaceToken()
             loading.close()
             this.$message('成功')
           })
@@ -165,7 +199,7 @@ export default {
             loading.close()
             this.$message('失敗')
           })
-      })
+      }, 'image/jpeg')
     }
   }
 }

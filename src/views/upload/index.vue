@@ -137,9 +137,9 @@ export default {
         formData.append('infoId', this.infoId)
         axios({
           method: 'post',
-          url: `${process.env.VUE_APP_BASE_API}/api/faceService/face`,
+          url: `${process.env.VUE_APP_BASE_API}/face-service/faces/face`,
           headers: {
-            'Authorization': `Bearer ${this.token}`
+            'Authorization': this.token
           },
           data: formData
         })
@@ -153,7 +153,7 @@ export default {
             loading.close()
             this.$message('失敗')
           })
-      })
+      }, 'image/jpeg')
     }
   }
 }

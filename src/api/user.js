@@ -3,14 +3,12 @@ import axios from 'axios'
 
 export function login(data) {
   data = {
-    user: {
-      email: data.username,
-      password: data.password
-    }
+    email: data.username,
+    password: data.password
   }
   return axios({
     method: 'post',
-    url: `${process.env.VUE_APP_BASE_API}/api/user/login`,
+    url: `${process.env.VUE_APP_BASE_API}/auth-service/login`,
     data: data
   })
     .then((response) => {
